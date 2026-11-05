@@ -319,6 +319,9 @@ namespace MYAcademy_PortfolioProject.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("SkillItemId"));
 
+                    b.Property<int>("Level")
+                        .HasColumnType("int");
+
                     b.Property<int>("SkillId")
                         .HasColumnType("int");
 

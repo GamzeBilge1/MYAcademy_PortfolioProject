@@ -1,0 +1,115 @@
+﻿@model Skill
+@{
+    ViewData["Title"] = "CrateSkill";
+    Layout = "~/Areas/Admin/Views/AdminLayout/Index.cshtml";
+}
+<div class="container-fluid py-4">
+    <div class="data-table-card p-4">
+
+        <h4 class="fw-bold mb-4">Yeni Yetenek Kategorisi Ekle</h4>
+
+        <form method="post" asp-area="Admin" asp-controller="Skill" asp-action="CreateSkill">
+
+            <div class="mb-3">
+                <label class="form-label">Kategori Adı</label>
+                <input type="text" name="Title" class="form-control" required />
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Açıklama</label>
+                <textarea name="Description" class="form-control" rows="3" required></textarea>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">İkon Sınıfı</label>
+                <input type="text" name="IconUrl" class="form-control"
+                       placeholder="Örn: bi bi-server" required />
+            </div>
+
+            <hr class="my-4" />
+
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5 class="fw-bold mb-0">Kategoriye Ait Yetenekler</h5>
+
+                <button type="button" class="btn btn-outline-primary btn-sm"
+                        onclick="addSkillItem()">
+                    <i class="bi bi-plus-lg me-1"></i> Yetenek Ekle
+                </button>
+            </div>
+
+            <div id="skillItemsContainer">
+                <div class="row g-3 mb-3 skill-item">
+                    <div class="col-md-7">
+                        <label class="form-label">Yetenek Adı</label>
+                        <input type="text" name="SkillItems[0].SkillItemTitle"
+                               class="form-control" placeholder="Örn: C#" required />
+                    </div>
+
+                    <div class="col-md-3">
+                        <label class="form-label">Seviye (0-100)</label>
+                        <input type="number" name="SkillItems[0].Level"
+                               class="form-control" min="0" max="100" required />
+                    </div>
+
+                    <div class="col-md-2 d-flex align-items-end">
+                        <button type="button" class="btn btn-outline-danger w-100"
+                                onclick="removeSkillItem(this)">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="d-flex gap-2 mt-4">
+                <button type="submit" class="btn btn-pastel-primary">
+                    <i class="bi bi-check-lg me-2"></i>Kaydet
+                </button>
+
+                <a href="/Admin/Skill/Index" class="btn btn-outline-secondary">
+                    İptal
+                </a>
+            </div>
+
+        </form>
+    </div>
+</div>
+
+<script>
+    function reindexSkillItems() {
+        const items = document.querySelectorAll(".skill-item");
+
+        items.forEach((item, index) => {
+            item.querySelector('input[name$=".SkillItemTitle"]').name =
+                `SkillItems[${index}].SkillItemTitle`;
+
+            item.querySelector('input[name$=".Level"]').name =
+                `SkillItems[${index}].Level`;
+        });
+    }
+
+    function addSkillItem() {
+        const container = document.getElementById("skillItemsContainer");
+        const item = container.querySelector(".skill-item").cloneNode(true);
+
+        item.querySelectorAll("input").forEach(input => {
+            input.value = "";
+        });
+
+        container.appendChild(item);
+        reindexSkillItems();
+    }
+
+    function removeSkillItem(button) {
+        const items = document.querySelectorAll(".skill-item");
+
+        if (items.length === 1) {
+            alert("En az bir yetenek eklemelisiniz.");
+            return;
+        }
+
+        button.closest(".skill-item").remove();
+        reindexSkillItems();
+    }
+</script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+

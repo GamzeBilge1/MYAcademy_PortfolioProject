@@ -1,0 +1,39 @@
+﻿<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+@if (TempData["SuccessMessage"] != null || TempData["ErrorMessage"] != null)
+{
+    <script>
+        Swal.fire({
+            position: "top",
+            icon: '@(TempData["SuccessMessage"] != null ? "success" : "error")',
+            title: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(
+              TempData["SuccessMessage"] ?? TempData["ErrorMessage"])),
+            showConfirmButton: false,
+            timer: 1500,
+            width: "350px"
+        });
+    </script>
+}
+<script>
+    document.querySelectorAll(".delete-form").forEach(form => {
+        form.addEventListener("submit", function (event) {
+            event.preventDefault();
+
+            Swal.fire({
+                title: "Silmek istediğinize emin misiniz?",
+                text: "Bu işlem geri alınamaz!",
+                icon: "warning",
+                width: "450px",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Evet, Sil",
+                cancelButtonText: "İptal"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    form.submit();
+                }
+            });
+        });
+    });
+</script>

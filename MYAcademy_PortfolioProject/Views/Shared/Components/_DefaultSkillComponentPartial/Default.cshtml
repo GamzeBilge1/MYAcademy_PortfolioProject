@@ -1,0 +1,80 @@
+﻿  @model List<Skill>
+ <!-- 6. Skills Section -->
+<section id="skills">
+    <div class="container">
+        <div class="section-header text-center mx-auto reveal-on-scroll" style="max-width: 680px;">
+            <div class="eyebrow-badge">
+                <i class="bi bi-stack"></i> TEKNOLOJİ YIĞINIM
+            </div>
+            <h2 class="section-title">
+                Kullandığım Teknolojiler ve Uzmanlık Alanlarım
+            </h2>
+            <p class="section-description mx-auto">
+                Bir fikrin hayata geçirilmesinden ölçeklenebilir bir yazılım ürününe dönüşmesine kadar farklı teknolojilerle çalışıyorum.
+            </p>
+        </div>
+
+        <div class="row g-4">
+            <!-- Category  -->
+            @foreach(var i in Model){
+                <div class="col-md-6 col-lg-4 reveal-on-scroll">
+                    <div class="skill-card">
+                        <div class="skill-icon-box">
+                            <i class="@i.IconUrl"></i>
+                        </div>
+                        <h3 class="h5 fw-bold mb-3">@i.Title</h3>
+                        <p class="text-muted small mb-4">@i.Description</p>
+                        <div>
+                            @foreach (var item in i.SkillItems.Take(3))
+                            {
+                                <div class="mb-3">
+                                    <div class="d-flex justify-content-between mb-1">
+                                        <span class="small">@item.SkillItemTitle</span>
+                                        <span class="small fw-bold">@item.Level%</span>
+                                    </div>
+
+                                    <div class="progress" style="height: 6px;">
+                                        <div class="progress-bar"
+                                             style="width: @(item.Level)%;background-color: #454A46;">
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+
+                            @if (i.SkillItems.Count > 3)
+                            {
+                                <div class="collapse" id="skillMore-@i.SkillId">
+                                    @foreach (var item in i.SkillItems.Skip(3))
+                                    {
+                                        <div class="mb-3">
+                                            <div class="d-flex justify-content-between mb-1">
+                                                <span class="small">@item.SkillItemTitle</span>
+                                                <span class="small fw-bold">@item.Level%</span>
+                                            </div>
+                                            <div class="progress" style="height: 6px;">
+                                                <div class="progress-bar"
+                                                     style="width: @(item.Level)%; background-color: #454A46;">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }
+                                </div>
+
+                                <button class="btn btn-sm w-100 border-0"
+                                        type="button"
+                                        data-bs-toggle="collapse"
+                                        data-bs-target="#skillMore-@i.SkillId"
+                                        aria-expanded="false">
+                                    <i class="bi bi-chevron-down"></i>
+                                </button>
+                            }
+                        </div>
+                    </div>
+                </div>
+            }
+       
+
+           
+        </div>
+    </div>
+</section>
