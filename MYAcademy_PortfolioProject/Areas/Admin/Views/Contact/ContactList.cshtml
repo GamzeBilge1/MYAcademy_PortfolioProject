@@ -1,0 +1,32 @@
+﻿@model List<Contact>
+@{
+    ViewData["Title"] = "ContactList";
+    Layout = "~/Areas/Admin/Views/AdminLayout/Index.cshtml";
+}
+<br /> <br />
+<table class="table table-hover">
+    <tr>
+        <th>#</th>
+        <th>Başlık</th>
+        <th>Açıklama</th>
+        <th>Email</th>
+        <th>Telefon</th>
+        <th>Lokasyon</th>
+        <th>Sil</th>
+        <th>Güncelle</th>
+
+    </tr>
+    @foreach(var i in Model){
+        <tr>
+            <td>@i.ContactId</td>
+            <td>@i.Title</td>
+            <td>@i.Description</td>
+            <td>@i.Email</td>
+            <td>@i.PhoneNumber</td>
+            <td>@i.Location</td>
+            <td> <a href="/Contact/DeleteContact/@i.ContactId" class="btn btn-danger">Sil</a></td>
+            <td> <a href="/Contact/UpdateContact/@i.ContactId" class="btn btn-success">Güncelle</a></td>
+        </tr>
+    }
+</table>
+
