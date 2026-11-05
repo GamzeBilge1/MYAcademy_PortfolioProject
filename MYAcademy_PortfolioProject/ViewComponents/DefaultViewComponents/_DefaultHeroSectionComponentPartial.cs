@@ -20,12 +20,13 @@ namespace MYAcademy_PortfolioProject.ViewComponents.DefaultViewComponents
             ViewBag.description = value.Description;
             ViewBag.mainImageUrl = value.MainImageUrl;
             var titles = _context.HeroTitles
-    .Where(x => x.isActive == true)
-    .OrderBy(x => x.Order)
-    .Select(x => x.Title)
-    .ToList();
+                          .Where(x => x.isActive == true)
+                          .OrderBy(x => x.Order)
+                          .Select(x => x.Title)
+                          .ToList();
 
             ViewBag.heroTitles = titles;
+            ViewBag.socialMedias = _context.SocialMedias.ToList();
             return View();
 
         }

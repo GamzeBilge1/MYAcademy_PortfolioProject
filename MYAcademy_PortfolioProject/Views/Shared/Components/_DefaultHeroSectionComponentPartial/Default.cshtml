@@ -33,22 +33,21 @@
                             </a>
                         </div>
 
-                        <!-- Social Links -->
-                        <div class="d-flex align-items-center gap-2 pt-2">
-                            <span class="text-muted small me-2 font-heading fw-semibold">Takip Et:</span>
-                            <a href="https://github.com" target="_blank" rel="noopener noreferrer" class="social-pill" title="GitHub">
-                                <i class="bi bi-github"></i>
-                            </a>
-                            <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" class="social-pill" title="LinkedIn">
-                                <i class="bi bi-linkedin"></i>
-                            </a>
-                            <a href="https://youtube.com" target="_blank" rel="noopener noreferrer" class="social-pill" title="YouTube">
-                                <i class="bi bi-youtube"></i>
-                            </a>
-                            <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" class="social-pill" title="Instagram">
-                                <i class="bi bi-instagram"></i>
-                            </a>
-                        </div>
+                <!-- Social Links -->
+                <div class="d-flex align-items-center gap-2 pt-2">
+                    <span class="text-muted small me-2 font-heading fw-semibold">Takip Et:</span>
+
+                    @foreach (var item in ViewBag.socialMedias)
+                    {
+                        <a href="@item.Url"
+                           target="_blank"
+                           rel="noopener noreferrer"
+                           class="social-pill"
+                           title="@item.Title">
+                            <i class="@item.Icon"></i>
+                        </a>
+                    }
+                </div>
                     </div>
 
                     <!-- Right Column -->
