@@ -3,7 +3,7 @@ using MYAcademy_PortfolioProject.Context;
 
 namespace MYAcademy_PortfolioProject.ViewComponents.DefaultViewComponents
 {
-    public class _DefaultHeroSectionComponentPartial :ViewComponent
+    public class _DefaultHeroSectionComponentPartial : ViewComponent
     {
         private readonly PortfolioContext _context;
 
@@ -19,6 +19,13 @@ namespace MYAcademy_PortfolioProject.ViewComponents.DefaultViewComponents
             ViewBag.title = value.Title;
             ViewBag.description = value.Description;
             ViewBag.mainImageUrl = value.MainImageUrl;
+            var titles = _context.HeroTitles
+    .Where(x => x.isActive == true)
+    .OrderBy(x => x.Order)
+    .Select(x => x.Title)
+    .ToList();
+
+            ViewBag.heroTitles = titles;
             return View();
 
         }

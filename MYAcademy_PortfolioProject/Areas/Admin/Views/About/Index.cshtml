@@ -1,0 +1,71 @@
+﻿
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Areas/Admin/Views/AdminLayout/Index.cshtml";
+}
+
+<main class="page-content-area">
+
+    <div class="content-header-row">
+        <div>
+            <h1 class="page-title">Hakkımda</h1>
+            <p class="page-subtitle">
+                Ana sayfa ve hakkımda bölümündeki bilgileri buradan güncelleyebilirsiniz.
+            </p>
+        </div>
+    </div>
+
+    
+    @await Component.InvokeAsync("_AdminHeroSectionComponentPartial")
+    @await Component.InvokeAsync("_AdminAboutComponentPartial")
+
+</main>
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div id="successToast" class="success-toast">
+        <i class="bi bi-check-circle-fill"></i>
+        @TempData["SuccessMessage"]
+    </div>
+}
+
+<style>
+    .success-toast {
+        position: fixed;
+        top: 25px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 99999;
+        background: #2f5d4e;
+        color: white;
+        padding: 15px 25px;
+        border-radius: 12px;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+        animation: slideDown 0.4s ease;
+    }
+
+    @@keyframes slideDown {
+        from {
+            opacity: 0;
+            transform: translate(-50%, -20px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translate(-50%, 0);
+        }
+    }
+</style>
+
+<script>
+    setTimeout(function () {
+        const toast = document.getElementById("successToast");
+
+        if (toast) {
+            toast.style.transition = "opacity 0.4s";
+            toast.style.opacity = "0";
+
+            setTimeout(() => toast.remove(), 400);
+        }
+    }, 3000);
+</script>

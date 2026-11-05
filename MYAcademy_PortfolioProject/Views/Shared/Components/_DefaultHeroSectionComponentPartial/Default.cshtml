@@ -11,7 +11,9 @@
                         <h1 class="hero-title">
                             @ViewBag.title
                         </h1>
-
+                <script>
+                    window.heroTitles = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(ViewBag.heroTitles));
+                </script>
                         <div class="typewriter-wrapper">
                             <span id="typewriterText"></span><span class="typing-cursor"></span>
                         </div>
@@ -53,7 +55,7 @@
                     <div class="col-lg-5 reveal-on-scroll is-revealed">
                         <div class="position-relative mx-auto" style="max-width: 440px;">
                             <div class="hero-portrait-frame">
-                                <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuBOoGFL_RUXVi18KeTYZHtpMvWTtuGQlha2lSBEJIb3UBD2AHmHUMcwWkQuBFy2Ih2G3UQdItXjfmoP7gBHBbjDYT0TyYqrhY0j_ZslJZF6gFDTY3UEE3z56G-mss_yPIXrKHzkT6NmYtiU0oNmOWhuVL11uNPnRc-VMnSg-ZRgxS00UWdSipCRY2Dwo_lCXz0hBr0-rvvqSsoFJDYHrmyVLWyIbSRsdGcs24JgjX_388FLX_3wUEy8" alt="Murat Yücedağ — Yazılım Geliştiricisi ve Eğitmen" class="hero-portrait-img">
+                        <img src="@ViewBag.mainImageUrl" alt="Profil Fotoğrafı" class="hero-portrait-img">
                             </div>
 
                             <!-- Floating Experience Badge -->
@@ -69,12 +71,12 @@
 
                             <!-- Subtle Top Badge -->
                             <div class="floating-badge floating-badge-top d-none d-sm-flex">
-                                <div class="skill-icon-box mb-0" style="width: 38px; height: 38px; background: var(--accent-terracotta-soft); color: var(--accent-terracotta);">
+                                <div class="skill-icon-box mb-0" style="width: 30px; height: 20px; background: var(--accent-terracotta-soft); color: var(--accent-terracotta);">
                                     <i class="bi bi-people-fill"></i>
                                 </div>
                                 <div>
-                                    <div class="fw-bold font-heading small">200K+ Öğrenci</div>
-                                    <div class="text-muted" style="font-size: 0.72rem;">Online Topluluk</div>
+                                    <div class="fw-bold font-heading small">Modern Teknolojiler</div>
+                                    <div class="text-muted" style="font-size: 0.72rem;">Yenilikçi Çözümler</div>
                                 </div>
                             </div>
                         </div>
