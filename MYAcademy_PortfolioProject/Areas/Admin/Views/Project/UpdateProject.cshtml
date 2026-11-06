@@ -1,0 +1,86 @@
+﻿@model Project
+
+@{
+    ViewData["Title"] = "UpdateProject";
+    Layout = "~/Areas/Admin/Views/AdminLayout/Index.cshtml";
+}
+
+<div class="container-fluid py-4">
+    <div class="data-table-card p-4">
+
+        <h4 class="fw-bold mb-4">Proje Güncelle</h4>
+
+        <form method="post"
+              enctype="multipart/form-data"
+             >
+
+            <input type="hidden" asp-for="ProjectId" />
+            <input type="hidden" asp-for="ImageUrl" />
+            <div class="mb-3">
+                <label class="form-label">Proje Adı</label>
+                <input asp-for="ProjectName" class="form-control" required />
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Proje Açıklaması</label>
+                <textarea asp-for="ProjectDescription"
+                          class="form-control"
+                          rows="3"></textarea>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Teknoloji</label>
+                <input asp-for="Technology" class="form-control" />
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Kategori</label>
+                <select asp-for="CategoryId" class="form-select" required>
+                    <option value="">Kategori Seçiniz</option>
+                    @foreach (var item in ViewBag.Categories)
+                    {
+                        <option value="@item.CategoryId">
+                            @item.CategoryName
+                        </option>
+                    }
+                </select>
+            </div>
+
+            <div class="mb-3">
+             
+
+                <input type="file"
+                       name="imageFile"
+                       class="form-control"
+                       accept=".jpg,.jpeg,.png,.webp" />
+
+                <small class="text-muted">
+                    Yeni görsel seçmezseniz mevcut görsel korunur.
+                </small>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Durum</label>
+                <select asp-for="isActive" class="form-select">
+                    <option value="true">Aktif</option>
+                    <option value="false">Pasif</option>
+                </select>
+            </div>
+
+            <div class="d-flex gap-2 mt-4">
+                <button type="submit" class="btn btn-pastel-primary">
+                    <i class="bi bi-check-lg me-2"></i>
+                    Değişiklikleri Kaydet
+                </button>
+
+                <a asp-area="Admin"
+                   asp-controller="Project"
+                   asp-action="ProjectList"
+                   class="btn btn-outline-secondary">
+                    İptal
+                </a>
+            </div>
+
+        </form>
+    </div>
+</div>
