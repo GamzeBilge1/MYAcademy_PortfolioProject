@@ -141,6 +141,38 @@ namespace MYAcademy_PortfolioProject.Migrations
                     b.ToTable("Contacts");
                 });
 
+            modelBuilder.Entity("MYAcademy_PortfolioProject.Entities.Education", b =>
+                {
+                    b.Property<int>("EducationId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("EducationId"));
+
+                    b.Property<string>("CategoryName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("SchoolName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("isActive")
+                        .HasColumnType("bit");
+
+                    b.HasKey("EducationId");
+
+                    b.ToTable("Educations");
+                });
+
             modelBuilder.Entity("MYAcademy_PortfolioProject.Entities.Experience", b =>
                 {
                     b.Property<int>("ExperienceId")

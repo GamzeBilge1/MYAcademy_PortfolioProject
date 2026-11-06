@@ -1,0 +1,60 @@
+﻿@model Education
+@{
+    ViewData["Title"] = "CreateEducation";
+    Layout = "~/Areas/Admin/Views/AdminLayout/Index.cshtml";
+}
+
+<div class="container-fluid py-4">
+    <div class="data-table-card p-4">
+
+        <h4 class="fw-bold mb-4">Yeni Eğitim Ekle</h4>
+
+        <form method="post" asp-area="Admin" asp-controller="Education" asp-action="CreateEducation">
+
+            <div class="mb-3">
+                <label class="form-label">Eğitim Başlığı</label>
+                <input type="text" name="Title" class="form-control"
+                       placeholder="Örn: Lisans — Yazılım Mühendisliği" required />
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Okul Adı</label>
+                <input type="text" name="SchoolName" class="form-control"
+                       placeholder="Örn: Kırklareli Üniversitesi" required />
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Açıklama</label>
+                <textarea name="Description" class="form-control"
+                          rows="3" required></textarea>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Kategori Adı</label>
+                <input type="text" name="CategoryName" class="form-control"
+                       placeholder="Örn: Mezuniyet" required />
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Durum</label>
+                <select name="isActive" class="form-select">
+                    <option value="true">Aktif</option>
+                    <option value="false">Pasif</option>
+                </select>
+            </div>
+
+            <div class="d-flex gap-2 mt-4">
+                <button type="submit" class="btn btn-pastel-primary">
+                    <i class="bi bi-check-lg me-2"></i>Kaydet
+                </button>
+
+                <a href="/Admin/Education/Index" class="btn btn-outline-secondary">
+                    İptal
+                </a>
+            </div>
+
+        </form>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
