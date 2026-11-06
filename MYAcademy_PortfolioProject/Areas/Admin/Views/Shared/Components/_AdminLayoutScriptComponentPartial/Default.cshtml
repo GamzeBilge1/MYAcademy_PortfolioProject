@@ -1,4 +1,5 @@
-﻿<script>
+﻿<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+<script>
     // Mobile Sidebar Toggle
     const sidebar = document.getElementById('adminSidebar');
     const sidebarToggle = document.getElementById('sidebarToggle');
@@ -54,27 +55,7 @@
     searchInput.addEventListener('input', filterTable);
     statusFilter.addEventListener('change', filterTable);
 
-    // Sorting
-    const sortSelect = document.getElementById('sortSelect');
-    sortSelect.addEventListener('change', () => {
-      const tbody = document.getElementById('experienceTableBody');
-      const rows = Array.from(tableRows);
-
-      if (sortSelect.value === 'order-asc') {
-        rows.sort((a, b) => parseInt(a.dataset.order) - parseInt(b.dataset.order));
-      } else if (sortSelect.value === 'order-desc') {
-        rows.sort((a, b) => parseInt(b.dataset.order) - parseInt(a.dataset.order));
-      } else if (sortSelect.value === 'title-asc') {
-        rows.sort((a, b) => {
-          const titleA = a.querySelector('.exp-title-text').innerText;
-          const titleB = b.querySelector('.exp-title-text').innerText;
-          return titleA.localeCompare(titleB, 'tr');
-        });
-      }
-
-      rows.forEach(r => tbody.appendChild(r));
-      showToast('Sıralama Güncellendi', 'Deneyimler seçilen kritere göre dizildi.');
-    });
+ 
 
     // Modal Handlers
     const modal = document.getElementById('experienceModal');

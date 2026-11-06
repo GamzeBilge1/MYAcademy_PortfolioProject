@@ -1,4 +1,4 @@
-﻿
+﻿@model List<Experience>
 @{
     ViewData["Title"] = "ExperienceList";
     Layout = "~/Areas/Admin/Views/AdminLayout/Index.cshtml";
@@ -11,9 +11,9 @@
     <div class="content-header-row">
         <div>
             <h1 class="page-title">Deneyimlerim Listesi</h1>
-            <p class="page-subtitle">Portfolyo sitenizde yer alacak deneyim içeriklerini buradan yönetebilirsiniz.</p>
+         
         </div>
-        <div class="header-actions">
+      @*   <div class="header-actions">
             <button class="btn-pastel-secondary" id="btnExport">
                 <i class="bi bi-download"></i>
                 <span>Dışa Aktar</span>
@@ -22,7 +22,7 @@
                 <i class="bi bi-plus-circle-fill"></i>
                 <span>Yeni Deneyim Ekle</span>
             </button>
-        </div>
+        </div> *@
     </div>
 
     <!-- 4 Statistics Summary Cards -->
@@ -34,7 +34,7 @@
             </div>
             <div class="stat-content">
                 <span class="stat-label">Toplam Deneyim</span>
-                <h3 class="stat-value" id="statTotalCount">4</h3>
+                <h3 class="stat-value" id="statTotalCount">@Model.Count</h3>
             </div>
         </div>
 
@@ -45,7 +45,7 @@
             </div>
             <div class="stat-content">
                 <span class="stat-label">Aktif Kayıt</span>
-                <h3 class="stat-value" id="statActiveCount">3</h3>
+                <h3 class="stat-value" id="statActiveCount">@Model.Count(x => x.isActive)</h3>
             </div>
         </div>
 
@@ -56,7 +56,7 @@
             </div>
             <div class="stat-content">
                 <span class="stat-label">Pasif Kayıt</span>
-                <h3 class="stat-value" id="statPassiveCount">1</h3>
+                <h3 class="stat-value" id="statPassiveCount">@Model.Count(x => !x.isActive)</h3>
             </div>
         </div>
 
@@ -66,8 +66,10 @@
                 <i class="bi bi-calendar-check"></i>
             </div>
             <div class="stat-content">
-                <span class="stat-label">Son Güncelleme</span>
-                <h3 class="stat-value" style="font-size: 1.05rem; font-weight: 700; line-height: 1.4;">12 Ekim 2026</h3>
+                <span class="stat-label">Son Eklenen Deneyim</span>
+                <h3 class="stat-value" style="font-size: 1.05rem;">
+                    @(Model.OrderByDescending(x => x.ExperienceId).FirstOrDefault()?.Title ?? "Kayıt Yok")
+                </h3>
             </div>
         </div>
     </div>
@@ -89,11 +91,7 @@
                     <option value="Pasif">Pasif</option>
                 </select>
 
-                <select class="filter-select" id="sortSelect">
-                    <option value="order-asc">Sıralama: Önce 1 (Artan)</option>
-                    <option value="order-desc">Sıralama: Önce 4 (Azalan)</option>
-                    <option value="title-asc">Başlık (A-Z)</option>
-                </select>
+                
             </div>
 
             <div class="filters-right-group">
@@ -101,11 +99,41 @@
                     <i class="bi bi-arrow-clockwise"></i>
                     <span class="d-none d-md-inline">Yenile</span>
                 </button>
-                <button class="btn-table-util" id="btnBulkActions" title="Toplu İşlemler">
-                    <i class="bi bi-sliders"></i>
-                    <span class="d-none d-md-inline">Toplu İşlem</span>
-                </button>
-                <button class="btn-pastel-primary" style="padding: 7px 14px; font-size: 0.8rem;" onclick="openAddModal()">
+                <div class="dropdown">
+                    <button class="btn-table-util dropdown-toggle"
+                            type="button"
+                            data-bs-toggle="dropdown"
+                            aria-expanded="false">
+                        <i class="bi bi-sliders"></i>
+                        Toplu İşlem
+                    </button>
+
+                    <ul class="dropdown-menu">
+                        <li>
+                            <button type="button" class="dropdown-item"
+                                    onclick="bulkAction('activate')">
+                                Aktif Yap
+                            </button>
+                        </li>
+
+                        <li>
+                            <button type="button" class="dropdown-item"
+                                    onclick="bulkAction('deactivate')">
+                                Pasif Yap
+                            </button>
+                        </li>
+
+                        <li><hr class="dropdown-divider"></li>
+
+                        <li>
+                            <button type="button" class="dropdown-item text-danger"
+                                    onclick="bulkAction('delete')">
+                                Seçilenleri Sil
+                            </button>
+                        </li>
+                    </ul>
+                </div>
+                <button class="btn-pastel-primary" style="padding: 7px 14px; font-size: 0.8rem;" onclick=" document.getElementById('hizliEkle').scrollIntoView({ behavior: 'smooth' })">
                     <i class="bi bi-plus-lg"></i>
                     <span>Ekle</span>
                 </button>
@@ -117,231 +145,87 @@
             <table class="custom-admin-table" id="experienceTable">
                 <thead>
                     <tr>
-                        <th style="width: 44px; text-align: center;">
-                            <input type="checkbox" class="custom-checkbox" id="selectAllCheckbox" title="Tümünü Seç">
-                        </th>
-                        <th style="width: 60px;">ID</th>
+                        <th>
+                            <input type="checkbox" id="selectAllCheckbox" class="custom-checkbox">
+                        </th></th>
+                        <th>ID</th>
                         <th>Deneyim Başlığı</th>
-                        <th>Kurum / Şirket</th>
-                        <th>Çalışma Türü</th>
-                        <th>Tarih Aralığı</th>
+                        <th>Şirket / Kurum</th>
+                        <th>Açıklama</th>
+                        <th>Kategori</th>
                         <th>Durum</th>
-                        <th style="text-align: center;">Sıralama</th>
-                        <th style="text-align: right; width: 140px;">İşlemler</th>
+                        <th style="text-align: right;">İşlemler</th>
                     </tr>
                 </thead>
                 <tbody id="experienceTableBody">
                     <!-- Record 1 -->
-                    <tr data-id="1" data-status="Aktif" data-order="1">
-                        <td style="text-align: center;">
-                            <input type="checkbox" class="custom-checkbox row-select-checkbox">
-                        </td>
-                        <td class="col-id">#01</td>
-                        <td>
-                            <div class="experience-title-cell">
-                                <div class="exp-icon-bullet">
-                                    <i class="bi bi-laptop"></i>
+                    @foreach(var item in Model){
+                        <tr data-id="@item.ExperienceId"
+                            data-status="@(item.isActive ? "Aktif" : "Pasif")">
+                            <td style="text-align: center;">
+                                <input type="checkbox" class="custom-checkbox row-select-checkbox" value="@item.ExperienceId">
+                            </td>
+                            <td class="col-id">#@item.ExperienceId</td>
+                            <td>
+                                <div class="experience-title-cell">
+                                    <div class="exp-icon-bullet">
+                                        <i class="bi bi-laptop"></i>
+                                    </div>
+                                    <div>
+                                        <span class="exp-title-text">@item.Title</span>
+                                  
+                                    </div>
                                 </div>
-                                <div>
-                                    <span class="exp-title-text">Kıdemli Frontend Geliştirici</span>
-                                    <small class="text-muted d-block" style="font-size:0.75rem;">React, TypeScript, CSS Mimarisi</small>
+                            </td>
+                            <td>
+                                <div class="company-cell">
+                                    <i class="bi bi-building company-badge-icon"></i>
+                                    <span>@item.CompanyName</span>
                                 </div>
-                            </div>
-                        </td>
-                        <td>
-                            <div class="company-cell">
-                                <i class="bi bi-building company-badge-icon"></i>
-                                <span>Nova Digital Studio</span>
-                            </div>
-                        </td>
-                        <td>
-                            <span class="work-type-badge">Tam Zamanlı</span>
-                        </td>
-                        <td>
-                            <span class="date-badge">
-                                <i class="bi bi-calendar2-range"></i>
-                                Ocak 2022 - Devam Ediyor
-                            </span>
-                        </td>
-                        <td>
-                            <span class="status-pill status-active">Aktif</span>
-                        </td>
-                        <td style="text-align: center;">
-                            <span class="order-badge">1</span>
-                        </td>
-                        <td style="text-align: right;">
-                            <div class="row-actions-group justify-content-end">
-                                <button class="btn-action-icon btn-view" title="Görüntüle" onclick="viewRecord(1)">
-                                    <i class="bi bi-eye"></i>
-                                </button>
-                                <button class="btn-action-icon btn-edit" title="Güncelle" onclick="editRecord(1)">
-                                    <i class="bi bi-pencil-square"></i>
-                                </button>
-                                <button class="btn-action-icon btn-delete" title="Sil" onclick="deleteRecord(1)">
-                                    <i class="bi bi-trash3"></i>
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
+                            </td>
+                            <td>
+                                <span class="text-muted">@item.Description</span>
+                            </td>
+                            <td>
+                                <span class="work-type-badge">@item.CategoryName</span>
+                            </td>
+                            <td>
+                                @if (item.isActive)
+                                {
+                                    <span class="status-pill status-active">Aktif</span>
+                                }
+                                else
+                                {
+                                    <span class="status-pill status-passive">Pasif</span>
+                                }
+                            </td>
+                            
+                            <td style="text-align: right;">
+                                <div class="row-actions-group justify-content-end">
+                           
+                                    
+                                    <a href="/Admin/Experience/UpdateExperience/@item.ExperienceId"
+                                       class="btn-action-icon btn-edit"
+                                       title="Güncelle">
+                                        <i class="bi bi-pencil-square"></i>
+                                    </a>
+                                    <form action="/Admin/Experience/DeleteExperience/@item.ExperienceId"
+                                          method="post" class="delete-form">
 
-                    <!-- Record 2 -->
-                    <tr data-id="2" data-status="Aktif" data-order="2">
-                        <td style="text-align: center;">
-                            <input type="checkbox" class="custom-checkbox row-select-checkbox">
-                        </td>
-                        <td class="col-id">#02</td>
-                        <td>
-                            <div class="experience-title-cell">
-                                <div class="exp-icon-bullet">
-                                    <i class="bi bi-brush"></i>
-                                </div>
-                                <div>
-                                    <span class="exp-title-text">UI Geliştirici</span>
-                                    <small class="text-muted d-block" style="font-size:0.75rem;">Design System & Bootstrap Arayüzler</small>
-                                </div>
-                            </div>
-                        </td>
-                        <td>
-                            <div class="company-cell">
-                                <i class="bi bi-building company-badge-icon"></i>
-                                <span>PixelCraft Agency</span>
-                            </div>
-                        </td>
-                        <td>
-                            <span class="work-type-badge" style="background:#EEF2F6; color:#495D74; border-color:#DFE6EE;">Hibrit</span>
-                        </td>
-                        <td>
-                            <span class="date-badge">
-                                <i class="bi bi-calendar2-range"></i>
-                                Mart 2020 - Aralık 2021
-                            </span>
-                        </td>
-                        <td>
-                            <span class="status-pill status-active">Aktif</span>
-                        </td>
-                        <td style="text-align: center;">
-                            <span class="order-badge">2</span>
-                        </td>
-                        <td style="text-align: right;">
-                            <div class="row-actions-group justify-content-end">
-                                <button class="btn-action-icon btn-view" title="Görüntüle" onclick="viewRecord(2)">
-                                    <i class="bi bi-eye"></i>
-                                </button>
-                                <button class="btn-action-icon btn-edit" title="Güncelle" onclick="editRecord(2)">
-                                    <i class="bi bi-pencil-square"></i>
-                                </button>
-                                <button class="btn-action-icon btn-delete" title="Sil" onclick="deleteRecord(2)">
-                                    <i class="bi bi-trash3"></i>
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
+                                        <button type="submit"
+                                                class="btn-action-icon btn-delete"
+                                                title="Sil">
+                                            <i class="bi bi-trash3"></i>
+                                        </button>
 
-                    <!-- Record 3 -->
-                    <tr data-id="3" data-status="Pasif" data-order="3">
-                        <td style="text-align: center;">
-                            <input type="checkbox" class="custom-checkbox row-select-checkbox">
-                        </td>
-                        <td class="col-id">#03</td>
-                        <td>
-                            <div class="experience-title-cell">
-                                <div class="exp-icon-bullet">
-                                    <i class="bi bi-window-sidebar"></i>
+                                    </form>
                                 </div>
-                                <div>
-                                    <span class="exp-title-text">Web Arayüz Uzmanı</span>
-                                    <small class="text-muted d-block" style="font-size:0.75rem;">Kurumsal Web Siteleri & CMS Yönetimi</small>
-                                </div>
-                            </div>
-                        </td>
-                        <td>
-                            <div class="company-cell">
-                                <i class="bi bi-building company-badge-icon"></i>
-                                <span>BrightLabs Tech</span>
-                            </div>
-                        </td>
-                        <td>
-                            <span class="work-type-badge" style="background:#F2EFF6; color:#6B537E; border-color:#E6DDEC;">Uzaktan</span>
-                        </td>
-                        <td>
-                            <span class="date-badge">
-                                <i class="bi bi-calendar2-range"></i>
-                                Haziran 2018 - Şubat 2020
-                            </span>
-                        </td>
-                        <td>
-                            <span class="status-pill status-passive">Pasif</span>
-                        </td>
-                        <td style="text-align: center;">
-                            <span class="order-badge">3</span>
-                        </td>
-                        <td style="text-align: right;">
-                            <div class="row-actions-group justify-content-end">
-                                <button class="btn-action-icon btn-view" title="Görüntüle" onclick="viewRecord(3)">
-                                    <i class="bi bi-eye"></i>
-                                </button>
-                                <button class="btn-action-icon btn-edit" title="Güncelle" onclick="editRecord(3)">
-                                    <i class="bi bi-pencil-square"></i>
-                                </button>
-                                <button class="btn-action-icon btn-delete" title="Sil" onclick="deleteRecord(3)">
-                                    <i class="bi bi-trash3"></i>
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
+                            </td>
+                        </tr>
 
-                    <!-- Record 4 -->
-                    <tr data-id="4" data-status="Aktif" data-order="4">
-                        <td style="text-align: center;">
-                            <input type="checkbox" class="custom-checkbox row-select-checkbox">
-                        </td>
-                        <td class="col-id">#04</td>
-                        <td>
-                            <div class="experience-title-cell">
-                                <div class="exp-icon-bullet">
-                                    <i class="bi bi-code-square"></i>
-                                </div>
-                                <div>
-                                    <span class="exp-title-text">Junior Frontend Developer</span>
-                                    <small class="text-muted d-block" style="font-size:0.75rem;">HTML5, CSS3, JavaScript Bakımı</small>
-                                </div>
-                            </div>
-                        </td>
-                        <td>
-                            <div class="company-cell">
-                                <i class="bi bi-building company-badge-icon"></i>
-                                <span>Softline Works</span>
-                            </div>
-                        </td>
-                        <td>
-                            <span class="work-type-badge">Tam Zamanlı</span>
-                        </td>
-                        <td>
-                            <span class="date-badge">
-                                <i class="bi bi-calendar2-range"></i>
-                                Temmuz 2016 - Mayıs 2018
-                            </span>
-                        </td>
-                        <td>
-                            <span class="status-pill status-active">Aktif</span>
-                        </td>
-                        <td style="text-align: center;">
-                            <span class="order-badge">4</span>
-                        </td>
-                        <td style="text-align: right;">
-                            <div class="row-actions-group justify-content-end">
-                                <button class="btn-action-icon btn-view" title="Görüntüle" onclick="viewRecord(4)">
-                                    <i class="bi bi-eye"></i>
-                                </button>
-                                <button class="btn-action-icon btn-edit" title="Güncelle" onclick="editRecord(4)">
-                                    <i class="bi bi-pencil-square"></i>
-                                </button>
-                                <button class="btn-action-icon btn-delete" title="Sil" onclick="deleteRecord(4)">
-                                    <i class="bi bi-trash3"></i>
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
+                    }
+                 
+                  
                 </tbody>
             </table>
         </div>
@@ -349,107 +233,180 @@
         <!-- Table Footer: Pagination & Counter -->
         <div class="table-footer-area">
             <div class="pagination-counter">
-                Toplam <strong>4</strong> kayıttan <strong>1-4</strong> arası gösteriliyor
+                Toplam <strong>@ViewBag.TotalCount</strong> kayıttan
+                <strong>@((ViewBag.CurrentPage - 1) * 4 + 1)-@Math.Min(ViewBag.CurrentPage * 4, ViewBag.TotalCount)</strong>
+                arası gösteriliyor
             </div>
             <ul class="custom-pagination">
-                <li class="page-nav-item">
-                    <a href="#" class="page-nav-btn disabled" title="Önceki Sayfa">
-                        <i class="bi bi-chevron-left"></i>
-                    </a>
-                </li>
-                <li class="page-nav-item">
-                    <a href="#" class="page-nav-btn active">1</a>
-                </li>
-                <li class="page-nav-item">
-                    <a href="#" class="page-nav-btn disabled" title="Sonraki Sayfa">
-                        <i class="bi bi-chevron-right"></i>
-                    </a>
-                </li>
+                @for (int i = 1; i <= ViewBag.TotalPages; i++)
+                {
+                    <li class="page-nav-item">
+                        <a href="@Url.Action("ExperienceList", new { page = i })"
+                           class="page-nav-btn @(i == ViewBag.CurrentPage ? "active" : "")">
+                            @i
+                        </a>
+                    </li>
+                }
             </ul>
         </div>
     </div>
 
     <!-- Quick Add / Edit Side Panel & ASP.NET Core Integration Note -->
-    <div class="side-drawer-card">
+
+    <div class="side-drawer-card" id="hizliEkle">
         <div class="drawer-header">
             <div>
                 <h3 class="drawer-title">
                     <i class="bi bi-plus-square"></i>
-                    Hızlı Deneyim Oluşturma Paneli
+                    Deneyim Oluşturma Paneli
                 </h3>
-                <span class="text-secondary" style="font-size:0.8rem;">Bu form, sayfa içi veya modal olarak ASP.NET Core MVC ViewModel'e doğrudan bind edilebilir.</span>
             </div>
-            <span class="drawer-badge">ASP.NET Core MVC Uyumlu Form</span>
         </div>
 
-        <form id="inlineExperienceForm" onsubmit="handleFormSubmit(event)">
+        <form id="inlineExperienceForm" method="post"
+              action="/Admin/Experience/CreateExperience">
+
             <div class="row g-3">
+
                 <div class="col-md-6">
-                    <label class="form-label-custom">Deneyim Başlığı <span class="required-star">*</span></label>
-                    <input type="text" class="form-control-custom" placeholder="Örn: Senior Full Stack Developer" required>
+                    <label class="form-label-custom">
+                        Deneyim Başlığı <span class="required-star">*</span>
+                    </label>
+                    <input type="text" name="Title"
+                           class="form-control-custom"
+                           placeholder="Deneyim başlığını giriniz" required>
                 </div>
+
                 <div class="col-md-6">
-                    <label class="form-label-custom">Şirket / Kurum Adı <span class="required-star">*</span></label>
-                    <input type="text" class="form-control-custom" placeholder="Örn: Acme Tech Ltd." required>
+                    <label class="form-label-custom">
+                        Şirket / Kurum Adı <span class="required-star">*</span>
+                    </label>
+                    <input type="text" name="CompanyName"
+                           class="form-control-custom"
+                           placeholder="Şirket adını giriniz" required>
                 </div>
-                <div class="col-md-4">
-                    <label class="form-label-custom">Çalışma Türü</label>
-                    <select class="form-control-custom">
-                        <option value="Tam Zamanlı">Tam Zamanlı</option>
-                        <option value="Yarı Zamanlı">Yarı Zamanlı</option>
-                        <option value="Hibrit">Hibrit</option>
-                        <option value="Uzaktan">Uzaktan</option>
-                        <option value="Stajyer">Stajyer</option>
-                    </select>
+
+                <div class="col-md-12">
+                    <label class="form-label-custom">Kategori</label>
+                    <input type="text" name="CategoryName"
+                           class="form-control-custom"
+                           placeholder="Örn: Staj, İş Deneyimi">
                 </div>
-                <div class="col-md-4">
-                    <label class="form-label-custom">Başlangıç Tarihi</label>
-                    <input type="text" class="form-control-custom" placeholder="Örn: Ocak 2023">
-                </div>
-                <div class="col-md-4">
-                    <label class="form-label-custom">Bitiş Tarihi</label>
-                    <input type="text" class="form-control-custom" id="endDateInput" placeholder="Örn: Devam Ediyor">
-                </div>
+
                 <div class="col-12">
-                    <div class="form-check">
-                        <input class="form-check-input custom-checkbox" type="checkbox" id="ongoingCheck" onchange="toggleOngoingDate(this)">
-                        <label class="form-check-label ms-1" for="ongoingCheck" style="font-size:0.85rem; color:var(--text-secondary);">
-                            Hala bu pozisyonda çalışmaya devam ediyorum
-                        </label>
-                    </div>
+                    <label class="form-label-custom">Açıklama</label>
+                    <textarea name="Description"
+                              class="form-control-custom"
+                              rows="3"
+                              placeholder="Deneyiminizi açıklayınız..."></textarea>
                 </div>
-                <div class="col-12">
-                    <label class="form-label-custom">Açıklama / Görev Kapsamı</label>
-                    <textarea class="form-control-custom" rows="2" placeholder="Üstlenilen sorumluluklar, kullanılan teknolojiler ve başarılar..."></textarea>
-                </div>
-                <div class="col-md-4">
+
+                <div class="col-md-6">
                     <label class="form-label-custom">Durum</label>
-                    <select class="form-control-custom">
-                        <option value="Aktif">Aktif (Portfolyoda Göster)</option>
-                        <option value="Pasif">Pasif (Gizli)</option>
+                    <select name="isActive" class="form-control-custom">
+                        <option value="true">Aktif (Portfolyoda Göster)</option>
+                        <option value="false">Pasif (Gizli)</option>
                     </select>
                 </div>
-                <div class="col-md-4">
-                    <label class="form-label-custom">Sıralama Önceliği</label>
-                    <input type="number" class="form-control-custom" value="5" min="1">
-                </div>
-                <div class="col-md-4 d-flex align-items-end justify-content-end gap-2">
-                    <button type="reset" class="btn-pastel-secondary" style="padding: 8px 14px;">İptal</button>
-                    <button type="submit" class="btn-pastel-primary" style="padding: 8px 20px;">
+
+                <div class="col-12 d-flex justify-content-end gap-2">
+                    <button type="reset" class="btn-pastel-secondary">
+                        Temizle
+                    </button>
+
+                    <button type="submit" class="btn-pastel-primary">
                         <i class="bi bi-check-lg"></i>
-                        <span>Kaydet</span>
+                        Kaydet
                     </button>
                 </div>
+
             </div>
         </form>
-
-        <div class="aspnet-tip-box">
-            <i class="bi bi-info-circle-fill" style="color:var(--accent-primary-hover); font-size:1.1rem;"></i>
-            <div>
-                <strong>Geliştirici Notu (ASP.NET Core MVC):</strong> Bu arayüz <code>@@model ExperienceViewModel</code> nesnesi ile <code>[HttpPost] CreateExperience</code> Controller aksiyonlarına bağlanmaya hazır HTML semantiğine ve data attributelerine sahiptir.
-            </div>
-        </div>
     </div>
+
 
 </main>
 
+<script>
+    document.getElementById("tableSearchInput").addEventListener("input", function () {
+        let search = this.value.toLocaleLowerCase("tr-TR");
+        let rows = document.querySelectorAll("#experienceTableBody tr");
+
+        rows.forEach(function (row) {
+            let title = row.querySelector(".exp-title-text")
+                .textContent.toLocaleLowerCase("tr-TR");
+
+            row.style.display = title.includes(search) ? "" : "none";
+        });
+    });
+        document.getElementById("statusFilterSelect").addEventListener("change", function () {
+        let selectedStatus = this.value;
+        let rows = document.querySelectorAll("#experienceTableBody tr");
+
+        rows.forEach(function (row) {
+            let status = row.getAttribute("data-status");
+
+            row.style.display =
+                selectedStatus === "all" || status === selectedStatus
+                    ? ""
+                    : "none";
+        });
+    });
+           document.getElementById("btnRefreshTable").addEventListener("click", function () {
+        window.location.href = '@Url.Action("ExperienceList", "Experience", new { area = "Admin" })';
+    });
+        function getSelectedIds() {
+        let checkboxes = document.querySelectorAll(".row-select-checkbox:checked");
+
+        let ids = Array.from(checkboxes).map(x => Number(x.value));
+
+        return ids;
+    }
+     async function bulkAction(actionType) {
+        let ids = getSelectedIds();
+
+        if (ids.length === 0) {
+            alert("Lütfen en az bir deneyim seçiniz.");
+            return;
+        }
+
+           if (actionType === "delete") {
+        const result = await Swal.fire({
+            title: "Emin misiniz?",
+            text: "Seçilen deneyimler kalıcı olarak silinecek!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonText: "Sil",
+            cancelButtonText: "İptal",
+            confirmButtonColor: "#d33"
+        });
+
+        if (!result.isConfirmed) {
+            return;
+        }
+    }
+        let data = new URLSearchParams();
+
+        ids.forEach(id => data.append("ids", id));
+        data.append("actionType", actionType);
+
+        fetch('/Admin/Experience/BulkAction', {
+            method: 'POST',
+            body: data
+        })
+        .then(response => {
+            if (response.ok) {
+                location.reload();
+            } else {
+                alert("İşlem başarısız oldu.");
+            }
+        })
+        .catch(() => alert("Sunucuya bağlanılamadı."));
+    }
+
+        document.getElementById("selectAllCheckbox").addEventListener("change", function () {
+        document.querySelectorAll(".row-select-checkbox").forEach(function (checkbox) {
+            checkbox.checked = document.getElementById("selectAllCheckbox").checked;
+        });
+    });
+</script>

@@ -32,22 +32,32 @@
                         <td>
                             @string.Join(", ", item.SkillItems.Select(x => x.SkillItemTitle))
                         </td>
+                       
+
                         <td>
-                            <div class="d-flex gap-2">
+                            <div class="row-actions-group justify-content-end">
+
                                 <a href="/Admin/Skill/UpdateSkill/@item.SkillId"
-                                   class="btn btn-sm btn-outline-primary">
-                                    Düzenle
+                                   class="btn-action-icon btn-edit"
+                                   title="Güncelle">
+                                    <i class="bi bi-pencil-square"></i>
                                 </a>
+
                                 <form action="/Admin/Skill/DeleteSkill/@item.SkillId"
                                       method="post" class="delete-form">
-                              
-                                    <button type="submit" class="btn btn-sm btn-outline-danger">
-                                        Sil
+
+                                    <button type="submit"
+                                            class="btn-action-icon btn-delete"
+                                            title="Sil">
+                                        <i class="bi bi-trash3"></i>
                                     </button>
+
                                 </form>
 
                             </div>
                         </td>
+
+                      
                     </tr>
                 }
             </tbody>
