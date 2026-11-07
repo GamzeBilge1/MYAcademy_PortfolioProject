@@ -267,8 +267,10 @@ dotnet run
 
 ## 👩‍💻 Geliştirici
 
+
 **Gamze Bilge**
 
-- GitHub: [GamzeBilge1](https://github.com/GamzeBilge1)
+[GitHub Hesabım](https://github.com/GamzeBilge1)  
+[LinkedIn Hesabım](LINKEDIN_PROFIL_LINKIN)
 
 
