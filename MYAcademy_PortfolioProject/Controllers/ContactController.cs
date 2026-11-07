@@ -15,6 +15,14 @@ namespace MYAcademy_PortfolioProject.Controllers
         [HttpPost]
         public IActionResult SendMessage(Message message)
         {
+            if (!ModelState.IsValid)
+            {
+                var error = ModelState.Values
+                             .SelectMany(x => x.Errors)
+                             .FirstOrDefault()?.ErrorMessage; 
+                TempData["ErrorMessage"] =error ??  "Lütfen alanları doğru doldurunuz!";
+                return Redirect("/Default/Index#contact");
+            }
             try
             {
                 message.SendDate = DateTime.Now;

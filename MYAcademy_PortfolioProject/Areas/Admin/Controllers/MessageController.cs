@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using MYAcademy_PortfolioProject.Context;
 using MYAcademy_PortfolioProject.Entities;
 
@@ -16,7 +17,7 @@ namespace MYAcademy_PortfolioProject.Areas.Admin.Controllers
 
         public IActionResult MessageList()
         {
-            var values = context.Messages.ToList();
+            var values = context.Messages.OrderByDescending(x => x.SendDate) .ToList();
             return View(values);
         }
         
@@ -59,6 +60,20 @@ namespace MYAcademy_PortfolioProject.Areas.Admin.Controllers
             var value = context.Messages.Find(id);
             context.Messages.Remove(value);
             context.SaveChanges();
+            return RedirectToAction("MessageList");
+        }
+
+        [HttpPost]
+        public IActionResult ChangeReadStatus(int id)
+        {
+            var message = context.Messages.Find(id);
+
+            if (message == null)
+                return NotFound();
+
+            message.IsRead = !message.IsRead;
+            context.SaveChanges();
+
             return RedirectToAction("MessageList");
         }
     }

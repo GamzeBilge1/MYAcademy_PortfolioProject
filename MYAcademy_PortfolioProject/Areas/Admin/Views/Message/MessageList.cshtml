@@ -1,34 +1,166 @@
 ﻿@model List<MYAcademy_PortfolioProject.Entities.Message>
+
 @{
     ViewData["Title"] = "MessageList";
     Layout = "~/Areas/Admin/Views/AdminLayout/Index.cshtml";
 }
 
-<div class="container">
-    <br />
-    <table class="table table-bordered">
-        <tr>
-            <th>#</th>
-            <th>Gönderen</th>
-            <th>Konu</th>
-            <th>Tarih</th>
-            <th>Mesajı Aç</th>
-            <th>Mesajı Düzenle</th>
-            <th>Mesajı Sil</th>
-        </tr>
-        @foreach (var i in Model)
-        {
-            <tr>
-                <td>@i.MessageId</td>
-                <td>@i.SenderName</td>
-                <td>@i.Subject</td>
-                <td>@i.SendDate.ToString("dd MMM yyyy")</td>
-                <td><a href="/Admin/Message/MessageDetail/@i.MessageId" class="btn btn-info">Mesajı Aç</a></td>
-                <td><a href="/Admin/Message/UpdateMessage/@i.MessageId" class="btn btn-success">Mesajı Düzenle</a></td>
-                <td><a href="/Admin/Message/DeleteMessage/@i.MessageId" class="btn btn-danger">Mesajı Sil</a></td>
-            </tr>
+<div class="container-fluid py-4">
+    <div class="data-table-card p-4">
 
-        }
-    </table>
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h4 class="fw-bold mb-0">Gelen Kutusu</h4>
+        </div>
+        <div class="table-filter-bar">
+            <div class="filters-left-group">
+                <div class="filter-search-box">
+                    <i class="bi bi-search"></i>
+                    <input type="text"
+                           id="messageSearchInput"
+                           placeholder="Gönderen kişiye göre ara...">
+                </div>
+            </div>
+        </div>
+
+        <table class="table align-middle">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Gönderen</th>
+                    <th>E-posta</th>
+                    <th>Konu</th>
+                    <th>Tarih</th>
+                    <th>Durum</th>
+                    <th class="text-end">İşlemler</th>
+                </tr>
+            </thead>
+
+            <tbody id="messageTableBody">
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@item.MessageId</td>
+                        <td class="sender-name">@item.SenderName</td>
+                        <td>@item.SenderEmail</td>
+                        <td>@item.Subject</td>
+                        <td>@item.SendDate.ToString("dd MMM yyyy")</td>
+
+
+                        <td>
+                            <form action="/Admin/Message/ChangeReadStatus/@item.MessageId"
+                                  method="post">
+
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input"
+                                           type="checkbox"
+                                           role="switch"
+                                           checked="@item.IsRead"
+                                           onchange="this.form.submit()">
+
+                                    <label class="form-check-label">
+                                        @(item.IsRead ? "Okundu" : "Okunmadı")
+                                    </label>
+                                </div>
+                            </form>
+                        </td>
+
+
+                        <td>
+                            <div class="row-actions-group justify-content-end">
+
+                                <button type="button"
+                                        class="btn-action-icon btn-edit"
+                                        title="Mesajı Aç"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#messageModal-@item.MessageId">
+                                    <i class="bi bi-envelope-open"></i>
+                                </button>
+
+                                <form action="/Admin/Message/DeleteMessage/@item.MessageId"
+                                      method="post"
+                                      class="delete-form">
+
+                                    <button type="submit"
+                                            class="btn-action-icon btn-delete"
+                                            title="Sil">
+                                        <i class="bi bi-trash3"></i>
+                                    </button>
+
+                                </form>
+
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+    </div>
 </div>
+<style>
+    .form-check-input:checked {
+        background-color: #8DBFA5;
+        border-color: #8DBFA5;
+    }
 
+    .form-check-input:focus {
+        border-color: #8DBFA5;
+        box-shadow: 0 0 0 0.2rem rgba(141, 191, 165, 0.2);
+    }
+</style>
+
+@foreach (var item in Model)
+{
+    <div class="modal fade"
+         id="messageModal-@item.MessageId"
+         tabindex="-1"
+         aria-hidden="true">
+
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <h5 class="modal-title">@item.Subject</h5>
+                    <button type="button"
+                            class="btn-close"
+                            data-bs-dismiss="modal">
+                    </button>
+                </div>
+
+                <div class="modal-body">
+                    <p><strong>Gönderen:</strong> @item.SenderName</p>
+                    <p><strong>E-posta:</strong> @item.SenderEmail</p>
+                    <p><strong>Tarih:</strong> @item.SendDate.ToString("dd.MM.yyyy HH:mm")</p>
+
+                    <hr />
+
+                    <p style="white-space: pre-wrap;">@item.MessageDetail</p>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button"
+                            class="btn btn-secondary"
+                            data-bs-dismiss="modal">
+                        Kapat
+                    </button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+}
+<script>
+    document.getElementById("messageSearchInput")
+        .addEventListener("input", function () {
+
+            let search = this.value.toLocaleLowerCase("tr-TR");
+            let rows = document.querySelectorAll("#messageTableBody tr");
+
+            rows.forEach(function (row) {
+                let sender = row.querySelector(".sender-name")
+                    .textContent.toLocaleLowerCase("tr-TR");
+
+                row.style.display = sender.includes(search) ? "" : "none";
+            });
+        });
+</script>
