@@ -6,33 +6,105 @@
         <div class="breadcrumb-custom">
             <a href="#"><i class="bi bi-house me-1"></i> Ana Sayfa</a>
             <span class="separator">/</span>
-            <span class="active-crumb">#</span>
+            <span class="active-crumb"></span>
         </div>
     </div>
 
     <div class="navbar-right">
-        <!-- Search bar -->
-        <div class="nav-search-box">
-            <i class="bi bi-search"></i>
-            <input type="text" placeholder="Aranacak kelime..." id="navQuickSearch">
+    
+        <!-- Quick Action Button -->
+        <div class="dropdown">
+            <button class="btn-quick-add dropdown-toggle"
+                    type="button"
+                    data-bs-toggle="dropdown"
+                    aria-expanded="false">
+                <i class="bi bi-plus-lg"></i>
+                <span>Hızlı Ekle</span>
+            </button>
+
+            <ul class="dropdown-menu dropdown-menu-end">
+                <li>
+                    <a class="dropdown-item" href="/Admin/Project/CreateProject">
+                        Proje Ekle
+                    </a>
+                </li>
+                <li>
+                    <a class="dropdown-item" href="/Admin/Experience/ExperienceList">
+                        Deneyim Ekle
+                    </a>
+                </li>
+                <li>
+                    <a class="dropdown-item" href="/Admin/Education/CreateEducation">
+                        Eğitim Ekle
+                    </a>
+                </li>
+                <li>
+                    <a class="dropdown-item" href="/Admin/SocialMedia/CreateSocialMedia">
+                        Sosyal Medya Ekle
+                    </a>
+                </li>
+            </ul>
         </div>
 
-        <!-- Quick Action Button -->
-        <button class="btn-quick-add" onclick="openAddModal()">
-            <i class="bi bi-plus-lg"></i>
-            <span>Hızlı Ekle</span>
-        </button>
 
-        <!-- Notification Bell -->
-        <a href="javascript:void(0)" class="icon-action-btn" title="Bildirimler" id="notificationBtn">
-            <i class="bi bi-bell"></i>
-            <span class="notification-dot"></span>
-        </a>
 
-        <!-- Messages / Quick Access -->
-        <a href="javascript:void(0)" class="icon-action-btn" title="Mesajlar">
-            <i class="bi bi-chat-left-text"></i>
-        </a>
+
+            <div class="dropdown">
+                <button type="button" class="icon-action-btn"
+                        data-bs-toggle="dropdown"
+                        aria-expanded="false"
+                        title="Mesajlar">
+                    <i class="bi bi-chat-left-text"></i>
+                </button>
+
+                <div class="dropdown-menu dropdown-menu-end border-0 shadow-lg p-0"
+                     style="width:330px; max-width:90vw; border-radius:16px; overflow:hidden;">
+
+                    <div class="px-3 py-3 border-bottom">
+                        <span class="fw-semibold" style="font-size:14px;">
+                            Son Mesajlar
+                        </span>
+                    </div>
+
+                    @foreach (var item in Model)
+                    {
+                        <div class="d-flex align-items-center gap-3 px-3 py-3 border-bottom">
+
+                            <div class="d-flex align-items-center justify-content-center flex-shrink-0"
+                                 style="width:38px; height:38px; border-radius:12px;
+                            background:#eef4ef; color:#527c61; font-weight:600;">
+                                @(string.IsNullOrWhiteSpace(item.SenderName) ? "?" : item.SenderName.Substring(0, 1).ToUpper())
+                            </div>
+
+                            <div class="flex-grow-1" style="min-width:0;">
+                                <div class="fw-semibold text-truncate" style="font-size:13px;">
+                                    @item.SenderName
+                                </div>
+
+                                <div class="text-muted text-truncate" style="font-size:12px;">
+                                    @item.Subject
+                                </div>
+                            </div>
+
+                            @if (!item.IsRead)
+                            {
+                                <span style="width:7px; height:7px; border-radius:50%;
+                                 background:#77a88a; flex-shrink:0;"></span>
+                            }
+                        </div>
+                    }
+
+                    <a href="/Admin/Message/MessageList"
+                       class="d-block text-center text-decoration-none py-3"
+                       style="font-size:12px; font-weight:600; color:#527c61;">
+                        Tüm Mesajları Gör
+                        <i class="bi bi-arrow-right ms-1"></i>
+                    </a>
+                </div>
+            </div>
+
+     
+
 
         <!-- Admin Profile Pill -->
         <div class="nav-profile-pill">
