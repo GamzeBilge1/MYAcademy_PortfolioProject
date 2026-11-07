@@ -1,32 +1,110 @@
 ﻿@model List<Contact>
+
 @{
     ViewData["Title"] = "ContactList";
     Layout = "~/Areas/Admin/Views/AdminLayout/Index.cshtml";
 }
-<br /> <br />
-<table class="table table-hover">
-    <tr>
-        <th>#</th>
-        <th>Başlık</th>
-        <th>Açıklama</th>
-        <th>Email</th>
-        <th>Telefon</th>
-        <th>Lokasyon</th>
-        <th>Sil</th>
-        <th>Güncelle</th>
 
-    </tr>
-    @foreach(var i in Model){
-        <tr>
-            <td>@i.ContactId</td>
-            <td>@i.Title</td>
-            <td>@i.Description</td>
-            <td>@i.Email</td>
-            <td>@i.PhoneNumber</td>
-            <td>@i.Location</td>
-            <td> <a href="/Contact/DeleteContact/@i.ContactId" class="btn btn-danger">Sil</a></td>
-            <td> <a href="/Contact/UpdateContact/@i.ContactId" class="btn btn-success">Güncelle</a></td>
-        </tr>
-    }
-</table>
+<div class="container-fluid py-4">
+    <div class="data-table-card p-4">
 
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h4 class="fw-bold mb-0">İletişim Bilgileri</h4>
+        </div>
+
+        <table class="table align-middle">
+            <thead>
+                <tr>
+                    <th>Başlık</th>
+                    <th>Açıklama</th>
+                    <th>E-posta</th>
+                    <th>Telefon</th>
+                    <th>Lokasyon</th>
+                    <th class="text-end">İşlemler</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@item.Title</td>
+                        <td>@item.Description</td>
+                        <td>@item.Email</td>
+                        <td>@item.PhoneNumber</td>
+                        <td>@item.Location</td>
+
+                        <td>
+                            <div class="row-actions-group justify-content-end">
+
+                                <a href="/Admin/Contact/UpdateContact/@item.ContactId"
+                                   class="btn-action-icon btn-edit"
+                                   title="Güncelle">
+                                    <i class="bi bi-pencil-square"></i>
+                                </a>
+
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+    </div>
+
+    <div class="data-table-card p-4 mt-4">
+
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h4 class="fw-bold mb-0">Sosyal Medya Hesapları</h4>
+
+            <a href="/Admin/SocialMedia/CreateSocialMedia"
+               class="btn btn-pastel-primary">
+                <i class="bi bi-plus-lg me-2"></i>Yeni Hesap Ekle
+            </a>
+        </div>
+
+        <table class="table align-middle">
+            <thead>
+                <tr>
+                    <th>Platform</th>
+                    <th>Bağlantı</th>
+                    <th class="text-end">İşlemler</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @foreach (var item in ViewBag.SocialMedias)
+                {
+                    <tr>
+                        <td>@item.Title</td>
+                        <td>@item.Url</td>
+
+                        <td>
+                            <div class="row-actions-group justify-content-end">
+
+                                <a href="/Admin/SocialMedia/UpdateSocialMedia/@item.SocialMediaId"
+                                   class="btn-action-icon btn-edit"
+                                   title="Güncelle">
+                                    <i class="bi bi-pencil-square"></i>
+                                </a>
+
+                                <form action="/Admin/SocialMedia/DeleteSocialMedia/@item.SocialMediaId"
+                                      method="post"
+                                      class="delete-form">
+                                    <button type="submit"
+                                            class="btn-action-icon btn-delete"
+                                            title="Sil">
+                                        <i class="bi bi-trash3"></i>
+                                    </button>
+                                </form>
+
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+    </div>
+
+</div>
