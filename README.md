@@ -270,8 +270,5 @@ dotnet run
 **Gamze Bilge**
 
 - GitHub: [GamzeBilge1](https://github.com/GamzeBilge1)
-- Repository: [MYAcademy_PortfolioProject](https://github.com/GamzeBilge1/MYAcademy_PortfolioProject)
 
----
 
-*Bu proje, MY Akademi Bootcamp kapsamında geliştirilen portfolyo case çalışmasıdır.*
