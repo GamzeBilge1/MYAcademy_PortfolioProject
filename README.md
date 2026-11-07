@@ -271,6 +271,6 @@ dotnet run
 **Gamze Bilge**
 
 [GitHub Hesabım](https://github.com/GamzeBilge1)  
-[LinkedIn Hesabım](LINKEDIN_PROFIL_LINKIN)
+[LinkedIn Hesabım](https://www.linkedin.com/in/gamze-bilge1/)
 
 
