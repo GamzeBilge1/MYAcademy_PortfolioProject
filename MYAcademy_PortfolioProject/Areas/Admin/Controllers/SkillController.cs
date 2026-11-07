@@ -33,6 +33,12 @@ namespace MYAcademy_PortfolioProject.Areas.Admin.Controllers
         [HttpPost]
         public IActionResult CreateSkill(Skill skill)
         {
+
+            if (!ModelState.IsValid)
+            {
+                TempData["ErrorMessage"] = "Lütfen alanları kontrol ediniz.";
+                return View(skill);
+            }
             try
             {
                 _context.Skills.Add(skill);
@@ -59,6 +65,11 @@ namespace MYAcademy_PortfolioProject.Areas.Admin.Controllers
         [HttpPost]
         public IActionResult UpdateSkill(Skill skill)
         {
+            if (!ModelState.IsValid)
+            {
+                TempData["ErrorMessage"] = "Lütfen alanları kontrol ediniz.";
+                return View(skill);
+            }
             try
             {
                 var value = _context.Skills

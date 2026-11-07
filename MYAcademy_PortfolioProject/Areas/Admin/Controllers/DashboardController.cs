@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using MYAcademy_PortfolioProject.Areas.Admin.ViewModels;
 using MYAcademy_PortfolioProject.Context;
 
 namespace MYAcademy_PortfolioProject.Areas.Admin.Controllers
@@ -14,10 +16,39 @@ namespace MYAcademy_PortfolioProject.Areas.Admin.Controllers
         }
         public IActionResult Index()
         {
-            ViewBag.v1 = _context.Messages.Count();
-            ViewBag.v2 = _context.Messages.Where(x => x.IsRead == false).Count();
-            ViewBag.v3 = _context.Messages.Where(x => x.IsRead == true).Count();
-            return View();
+            var model = new DashboardViewModel
+            {
+                TotalProjects = _context.Projects.Count(),
+                ActiveProjects = _context.Projects.Count(x => x.isActive),
+                TotalSkills = _context.Skills.Count(),
+                TotalExperiences = _context.Experiences.Count(),
+                TotalEducations = _context.Educations.Count(),
+                TotalMessages = _context.Messages.Count(),
+                UnreadMessages = _context.Messages.Count(x => !x.IsRead),
+                ReadMessages = _context.Messages.Count(x => x.IsRead),
+
+                LastMessages = _context.Messages
+                    .OrderByDescending(x => x.SendDate)
+                    .Take(5)
+                    .ToList(),
+              
+                CategorySummaries = _context.Projects
+                    .GroupBy(x => new { x.CategoryId, x.Category.CategoryName })
+                    .Select(x => new
+                    {
+                        CategoryName = x.Key.CategoryName,
+                        ProjectCount = x.Count()
+                    })
+                    .ToDictionary(x => x.CategoryName, x => x.ProjectCount),
+
+                LastProjects = _context.Projects
+                    .Include(x => x.Category)
+                    .OrderByDescending(x => x.ProjectId)
+                    .Take(3)
+                    .ToList()
+            };
+
+            return View(model);
         }
     }
 }

@@ -28,6 +28,12 @@ namespace MYAcademy_PortfolioProject.Areas.Admin.Controllers
         [HttpPost]
         public IActionResult CreateEducation(Education education)
         {
+            if (!ModelState.IsValid)
+            {
+                TempData["ErrorMessage"] = "Lütfen bilgileri kontrol ediniz.";
+                return View(education);
+            }
+
             try
             {
                 _context.Educations.Add(education);
@@ -52,6 +58,11 @@ namespace MYAcademy_PortfolioProject.Areas.Admin.Controllers
         [HttpPost]
         public IActionResult UpdateEducation(Education education)
         {
+            if (!ModelState.IsValid)
+            {
+                TempData["ErrorMessage"] = "Lütfen bilgileri kontrol ediniz.";
+                return View(education);
+            }
             try
             {
                 _context.Educations.Update(education);

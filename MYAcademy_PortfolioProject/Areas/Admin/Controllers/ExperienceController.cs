@@ -66,6 +66,11 @@ namespace MYAcademy_PortfolioProject.Areas.Admin.Controllers
         [HttpPost]
         public IActionResult CreateExperience(Experience experience)
         {
+            if (!ModelState.IsValid)
+            {
+                TempData["ErrorMessage"] = "Lütfen bilgileri kontrol ediniz.";
+                return RedirectToAction("ExperienceList");
+            }
             try
             {
                 context.Experiences.Add(experience);
@@ -89,6 +94,11 @@ namespace MYAcademy_PortfolioProject.Areas.Admin.Controllers
         [HttpPost]
         public IActionResult UpdateExperience(Experience experience)
         {
+            if (!ModelState.IsValid)
+            {
+                TempData["ErrorMessage"] = "Lütfen bilgileri kontrol ediniz.";
+                return View(experience);
+            }
             try
             {
                 context.Experiences.Update(experience);

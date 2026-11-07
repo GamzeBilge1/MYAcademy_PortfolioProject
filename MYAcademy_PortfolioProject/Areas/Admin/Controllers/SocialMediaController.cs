@@ -24,7 +24,12 @@ namespace MYAcademy_PortfolioProject.Areas.Admin.Controllers
             [HttpPost]
             public IActionResult CreateSocialMedia(SocialMedia socialMedia)
             {
-                try
+            if (!ModelState.IsValid)
+            {
+                TempData["ErrorMessage"] = "Lütfen alanları kontrol ediniz.";
+                return View(socialMedia);
+            }
+            try
                 {
                     _context.SocialMedias.Add(socialMedia);
                     _context.SaveChanges();
@@ -58,6 +63,11 @@ namespace MYAcademy_PortfolioProject.Areas.Admin.Controllers
         [HttpPost]
         public IActionResult UpdateSocialMedia(SocialMedia socialMedia)
         {
+            if (!ModelState.IsValid)
+            {
+                TempData["ErrorMessage"] = "Lütfen alanları kontrol ediniz.";
+                return View(socialMedia);
+            }
             try
             {
                 _context.SocialMedias.Update(socialMedia);

@@ -32,6 +32,11 @@ namespace MYAcademy_PortfolioProject.Areas.Admin.Controllers
         [HttpPost]
         public IActionResult CreateContact(Contact contact)
         {
+            if (!ModelState.IsValid)
+            {
+                TempData["ErrorMessage"] = "Lütfen bilgileri kontrol ediniz.";
+                return View(contact);
+            }
             _context.Contacts.Add(contact);
             _context.SaveChanges();
             return RedirectToAction("ContactList");
@@ -46,6 +51,11 @@ namespace MYAcademy_PortfolioProject.Areas.Admin.Controllers
         [HttpPost]
         public IActionResult UpdateContact(Contact contact)
         {
+            if (!ModelState.IsValid)
+            {
+                TempData["ErrorMessage"] = "Lütfen bilgileri kontrol ediniz.";
+                return View(contact);
+            }
             try
             {
                 _context.Contacts.Update(contact);

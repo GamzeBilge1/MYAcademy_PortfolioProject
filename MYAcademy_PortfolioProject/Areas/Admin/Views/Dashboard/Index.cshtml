@@ -1,22 +1,19 @@
-﻿@{
+﻿@model MYAcademy_PortfolioProject.Areas.Admin.ViewModels.DashboardViewModel
+
+@{
     ViewData["Title"] = "Dashboard";
     Layout = "~/Areas/Admin/Views/AdminLayout/Index.cshtml";
 
-    // Dinamik veriler (controller'dan)
-    int total = ViewBag.v1;
-    int unread = ViewBag.v2;
-    int read = ViewBag.v3;
-    int rate = total == 0 ? 0 : read * 100 / total;
-
-    // Statik (UI) veriler
-    var labels = new[] { "Pzt", "Sal", "Çar", "Per", "Cum", "Cmt", "Paz" };
-    var counts = new[] { 4, 7, 3, 9, 6, 2, 5 };
-    int max = counts.Max();
-    var last = new[] {
-        (Name: "Ayşe Yılmaz",  Subject: "Proje teklifi",      Text: "Merhaba, web siteniz için bir teklif almak istiyorum.", Date: "03 Kas, 14:20", IsRead: false),
-        (Name: "Mehmet Kaya",  Subject: "İş birliği",         Text: "Portfolyonuzu inceledim, birlikte çalışmak isteriz.",   Date: "02 Kas, 10:05", IsRead: false),
-        (Name: "Zeynep Demir", Subject: "Teşekkürler",        Text: "Geçen haftaki görüşme için teşekkür ederim.",            Date: "01 Kas, 18:42", IsRead: true),
-        (Name: "Can Öztürk",   Subject: "Staj başvurusu",     Text: "Ekibinizde staj imkânı olup olmadığını öğrenmek isterim.", Date: "31 Eki, 09:15", IsRead: true)
+    var stats = new[]
+    {
+        (Val: Model.TotalProjects, Lbl: "Toplam Proje", Icon: "bi-folder", Cls: "c-green"),
+        (Val: Model.ActiveProjects, Lbl: "Aktif Proje", Icon: "bi-check-circle", Cls: "c-blue"),
+        (Val: Model.TotalSkills, Lbl: "Yetenek", Icon: "bi-lightning", Cls: "c-green"),
+        (Val: Model.TotalExperiences, Lbl: "Deneyim", Icon: "bi-briefcase", Cls: "c-blue"),
+        (Val: Model.TotalEducations, Lbl: "Eğitim", Icon: "bi-mortarboard", Cls: "c-green"),
+        (Val: Model.TotalMessages, Lbl: "Toplam Mesaj", Icon: "bi-envelope", Cls: "c-blue"),
+        (Val: Model.UnreadMessages, Lbl: "Okunmamış Mesaj", Icon: "bi-envelope-exclamation", Cls: "c-rose"),
+       
     };
 }
 
@@ -44,11 +41,6 @@
         align-items: center;
     }
 
-        .db-title small {
-            color: var(--muted);
-            font-weight: 400;
-        }
-
     .stat {
         display: flex;
         align-items: center;
@@ -62,6 +54,7 @@
         display: grid;
         place-items: center;
         font-size: 1.4rem;
+        flex-shrink: 0;
     }
 
     .stat-val {
@@ -90,82 +83,6 @@
         background: #f9e7e7;
         color: #b44b4b;
     }
-
-    .bars {
-        display: flex;
-        align-items: flex-end;
-        gap: .8rem;
-        height: 190px;
-    }
-
-    .bar {
-        flex: 1;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: flex-end;
-        height: 100%;
-        gap: .4rem;
-    }
-
-    .bar-fill {
-        width: 100%;
-        max-width: 42px;
-        background: var(--g);
-        border-radius: 8px 8px 4px 4px;
-        opacity: .85;
-        transition: opacity .2s;
-    }
-
-    .bar:hover .bar-fill {
-        opacity: 1;
-    }
-
-    .bar span {
-        font-size: .75rem;
-        color: var(--muted);
-    }
-
-    .bar b {
-        font-size: .8rem;
-    }
-
-    .donut {
-        width: 150px;
-        height: 150px;
-        border-radius: 50%;
-        margin: .5rem auto 1.2rem;
-        display: grid;
-        place-items: center;
-        background: conic-gradient(var(--g) calc(var(--p) * 1%), var(--g-soft) 0);
-    }
-
-        .donut div {
-            width: 110px;
-            height: 110px;
-            border-radius: 50%;
-            background: #fff;
-            display: grid;
-            place-items: center;
-            font-size: 1.6rem;
-            font-weight: 700;
-        }
-
-    .legend {
-        display: flex;
-        justify-content: center;
-        gap: 1.2rem;
-        font-size: .85rem;
-        color: var(--muted);
-    }
-
-        .legend i {
-            display: inline-block;
-            width: 10px;
-            height: 10px;
-            border-radius: 3px;
-            margin-right: .35rem;
-        }
 
     .msg-row {
         display: flex;
@@ -209,25 +126,54 @@
         font-size: .72rem;
         padding: .3rem .6rem;
         border-radius: 20px;
+        white-space: nowrap;
     }
+
+    .db-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+        .db-table th {
+            color: var(--muted);
+            font-size: .8rem;
+            font-weight: 600;
+            padding: .8rem;
+            border-bottom: 1px solid var(--line);
+        }
+
+        .db-table td {
+            padding: .9rem .8rem;
+            border-bottom: 1px solid var(--line);
+            font-size: .9rem;
+        }
+
+        .db-table tr:last-child td {
+            border-bottom: none;
+        }
+
+    .db-link {
+        color: var(--g);
+        text-decoration: none;
+        font-size: .85rem;
+    }
+
+        .db-link:hover {
+            text-decoration: underline;
+        }
 </style>
 
 <div class="db container-fluid py-3">
 
-    <!-- Dinamik istatistik kartları -->
+    <!-- İSTATİSTİK KARTLARI -->
     <div class="row g-4 mb-4">
-        @{
-            var stats = new[] {
-        (Val: total,  Lbl: "Toplam Mesaj", Icon: "bi-envelope",             Cls: "c-green"),
-        (Val: unread, Lbl: "Okunmamış",    Icon: "bi-envelope-exclamation", Cls: "c-rose"),
-        (Val: read,   Lbl: "Okunmuş",      Icon: "bi-envelope-check",       Cls: "c-blue")
-        };
-        }
         @foreach (var s in stats)
         {
-            <div class="col-md-4">
+            <div class="col-md-4 col-xl-3">
                 <div class="db-card stat">
-                    <div class="stat-icon @s.Cls"><i class="bi @s.Icon"></i></div>
+                    <div class="stat-icon @s.Cls">
+                        <i class="bi @s.Icon"></i>
+                    </div>
                     <div>
                         <div class="stat-val">@s.Val</div>
                         <div class="stat-lbl">@s.Lbl</div>
@@ -235,66 +181,247 @@
                 </div>
             </div>
         }
+        <div class="col-md-4 col-xl-3">
+            <div class="db-card" style="height:100%;">
+                <div class="db-title mb-3">
+                    <span>
+                        <i class="bi bi-lightning-charge me-2"></i>
+                        Hızlı Erişim
+                    </span>
+                </div>
+
+                <div class="d-flex flex-column gap-2">
+                    <a asp-area="Admin"
+                       asp-controller="Project"
+                       asp-action="CreateProject"
+                       class="db-link">
+                        <i class="bi bi-plus-circle me-2"></i>
+                        Yeni Proje Ekle
+                    </a>
+
+                    <a asp-area="Admin"
+                       asp-controller="Experience"
+                       asp-action="ExperienceList"
+                       class="db-link">
+                        <i class="bi bi-briefcase me-2"></i>
+                        Deneyimleri Yönet
+                    </a>
+                </div>
+            </div>
+        </div>
     </div>
 
+    <!-- KATEGORİ ÖZETİ VE SON PROJELER -->
     <div class="row g-4 mb-4">
-        <!-- Haftalık grafik (statik) -->
-        <div class="col-xl-8">
+
+        <!-- Kategori özeti -->
+        <div class="col-xl-6">
             <div class="db-card">
-                <div class="db-title">Son 7 Gün <small>Günlük gelen mesajlar</small></div>
-                <div class="bars">
-                    @for (int i = 0; i < 7; i++)
+                <div class="db-title">
+                    Kategori Özeti
+                    <i class="bi bi-grid text-muted"></i>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="db-table">
+                        <thead>
+                            <tr>
+                                <th>Kategori</th>
+                                <th class="text-end">Proje Sayısı</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var category in Model.CategorySummaries)
+                            {
+                                <tr>
+                                    <td>@category.Key</td>
+                                    <td class="text-end">
+                                        <span class="badge-soft c-green">
+                                            @category.Value
+                                        </span>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+
+                @if (!Model.CategorySummaries.Any())
+                {
+                    <p class="text-muted small mt-3">
+                        Henüz kategori özeti bulunmuyor.
+                    </p>
+                }
+            </div>
+        </div>
+
+        <!-- Son 3 proje -->
+        <div class="col-xl-6">
+            <div class="db-card">
+                <div class="db-title">
+                    Son Projeler
+                    <i class="bi bi-folder2-open text-muted"></i>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="db-table">
+                        <thead>
+                            <tr>
+                                <th>Proje</th>
+                                <th>Kategori</th>
+                                <th class="text-end">Durum</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var project in Model.LastProjects)
+                            {
+                                <tr>
+                                    <td>@project.ProjectName</td>
+                                    <td>@project.Category?.CategoryName</td>
+                                    <td class="text-end">
+                                        @if (project.isActive)
+                                        {
+                                            <span class="badge-soft c-green">
+                                                Aktif
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge-soft c-rose">
+                                                Pasif
+                                            </span>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+
+                @if (!Model.LastProjects.Any())
+                {
+                    <p class="text-muted small mt-3">
+                        Henüz proje bulunmuyor.
+                    </p>
+                }
+            </div>
+        </div>
+
+    </div>
+
+
+
+    <!-- SON 5 MESAJ -->
+    <div class="data-table-card p-4 mb-4">
+
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h4 class="fw-bold mb-0">Son Mesajlar</h4>
+
+            <a asp-area="Admin"
+               asp-controller="Message"
+               asp-action="MessageList"
+               class="db-link">
+                Tümünü gör →
+            </a>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table align-middle">
+                <thead>
+                    <tr>
+                        <th>Gönderen</th>
+                        <th>E-posta</th>
+                        <th>Konu</th>
+                        <th>Tarih</th>
+                        <th>Durum</th>
+                        <th class="text-end">İşlemler</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @foreach (var item in Model.LastMessages)
                     {
-                        <div class="bar">
-                            <b>@counts[i]</b>
-                            <div class="bar-fill" style="height:@(counts[i] * 100 / max)%"></div>
-                            <span>@labels[i]</span>
-                        </div>
+                        <tr>
+                            <td>@item.SenderName</td>
+                            <td>@item.SenderEmail</td>
+                            <td>@item.Subject</td>
+                            <td>@item.SendDate.ToString("dd MMM yyyy")</td>
+
+                            <td>
+                                @if (item.IsRead)
+                                {
+                                    <span class="badge-soft c-blue">Okundu</span>
+                                }
+                                else
+                                {
+                                    <span class="badge-soft c-rose">Okunmadı</span>
+                                }
+                            </td>
+
+                            <td class="text-end">
+                                <button type="button"
+                                        class="btn-action-icon btn-edit"
+                                        title="Mesajı Aç"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#messageModal-@item.MessageId">
+                                    <i class="bi bi-envelope-open"></i>
+                                </button>
+                            </td>
+                        </tr>
                     }
-                </div>
-            </div>
+                </tbody>
+            </table>
         </div>
 
-        <!-- Okunma oranı (v1 ve v3'ten hesaplanır) -->
-        <div class="col-xl-4">
-            <div class="db-card">
-                <div class="db-title">Okunma Oranı</div>
-                <div class="donut" style="--p:@rate"><div>%@rate</div></div>
-                <div class="legend">
-                    <span><i style="background:var(--g)"></i>Okundu (@read)</span>
-                    <span><i style="background:var(--g-soft)"></i>Okunmadı (@unread)</span>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Son mesajlar (statik) -->
-    <div class="db-card">
-        <div class="db-title">
-            Son Mesajlar
-            <a asp-area="Admin" asp-controller="Message" asp-action="MessageList" class="small text-decoration-none" style="color:var(--g)">Tümünü gör →</a>
-        </div>
-
-        @foreach (var m in last)
+        @if (!Model.LastMessages.Any())
         {
-            <div class="msg-row">
-                <div class="avatar">@m.Name.Substring(0, 1)</div>
-                <div class="msg-body">
-                    <strong>@m.Name</strong> · <span class="small">@m.Subject</span>
-                    <p>@m.Text</p>
-                </div>
-                <small class="text-muted d-none d-md-block">@m.Date</small>
-                @if (m.IsRead)
-                {
-                    <span class="badge-soft c-blue">Okundu</span>
-                }
-                else
-                {
-                    <span class="badge-soft c-rose">Yeni</span>
-                }
-            </div>
+            <p class="text-muted small">
+                Henüz mesaj bulunmuyor.
+            </p>
         }
+
     </div>
-</div>
+
+
+    @foreach (var item in Model.LastMessages)
+    {
+        <div class="modal fade"
+             id="messageModal-@item.MessageId"
+             tabindex="-1"
+             aria-hidden="true">
+
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+
+                    <div class="modal-header">
+                        <h5 class="modal-title">@item.Subject</h5>
+                        <button type="button"
+                                class="btn-close"
+                                data-bs-dismiss="modal">
+                        </button>
+                    </div>
+
+                    <div class="modal-body">
+                        <p><strong>Gönderen:</strong> @item.SenderName</p>
+                        <p><strong>E-posta:</strong> @item.SenderEmail</p>
+                        <p><strong>Tarih:</strong> @item.SendDate.ToString("dd.MM.yyyy HH:mm")</p>
+
+                        <hr />
+
+                        <p style="white-space: pre-wrap;">@item.MessageDetail</p>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button"
+                                class="btn btn-secondary"
+                                data-bs-dismiss="modal">
+                            Kapat
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    }
 
 

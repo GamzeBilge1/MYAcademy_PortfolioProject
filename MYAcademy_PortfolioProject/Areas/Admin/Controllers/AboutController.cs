@@ -32,6 +32,11 @@ namespace MYAcademy_PortfolioProject.Areas.Admin.Controllers
         [HttpPost]
         public IActionResult UpdateAbout(About about)
         {
+            if (!ModelState.IsValid)
+            {
+                TempData["ErrorMessage"] = "Lütfen bilgileri kontrol ediniz.";
+                return RedirectToAction("Index");
+            }
             _context.Abouts.Update(about);
             _context.SaveChanges();
             TempData["SuccessMessage"] = "Hakkımda bilgileri başarıyla güncellendi!";

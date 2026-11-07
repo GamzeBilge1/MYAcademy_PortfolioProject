@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using MYAcademy_PortfolioProject.Context;
 using MYAcademy_PortfolioProject.Entities;
@@ -39,12 +40,33 @@ namespace MYAcademy_PortfolioProject.Areas.Admin.Controllers
         [HttpGet]
         public IActionResult CreateProject()
         {
-            ViewBag.Categories = _context.Categories.ToList();
+            ViewBag.Categories = new SelectList(
+                _context.Categories.ToList(),
+                "CategoryId",
+                "CategoryName"
+            );
+
             return View();
         }
         [HttpPost]
         public async Task<IActionResult> CreateProject(Project project, IFormFile imageFile)
         {
+            ModelState.Remove(nameof(Project.ImageUrl));
+            ModelState.Remove(nameof(Project.Category));
+            if (!ModelState.IsValid)
+            {
+                TempData["ErrorMessage"] = "Lütfen proje bilgilerini kontrol ediniz.";
+
+                ViewBag.Categories = new SelectList(
+                    _context.Categories.ToList(),
+                    "CategoryId",
+                    "CategoryName",
+                    project.CategoryId
+                );
+
+                return View(project);
+            }
+
             string? error = ValidateImage(imageFile);
 
             if (error != null)
@@ -65,6 +87,7 @@ namespace MYAcademy_PortfolioProject.Areas.Admin.Controllers
         [HttpGet]
         public IActionResult UpdateProject(int id)
         {
+
             var value = _context.Projects.Find(id);
             ViewBag.Categories = _context.Categories.ToList();
             return View(value);
@@ -72,6 +95,15 @@ namespace MYAcademy_PortfolioProject.Areas.Admin.Controllers
         [HttpPost]
         public async Task<IActionResult> UpdateProject(Project project, IFormFile? imageFile)
         {
+            ModelState.Remove(nameof(Project.ImageUrl));
+            ModelState.Remove(nameof(Project.Category));
+
+            if (!ModelState.IsValid)
+            {
+                TempData["ErrorMessage"] = "Lütfen proje bilgilerini kontrol ediniz.";
+                ViewBag.Categories = _context.Categories.ToList();
+                return View(project);
+            }
             try
             {
                 var value = _context.Projects.Find(project.ProjectId);
